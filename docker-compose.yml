@@ -1,0 +1,29 @@
+
+    elasticsearch:
+        image: elasticsearch
+        ports:
+            - "9200:9200"
+
+    heka:
+        build: config/heka
+        ports:
+            - "4881:4881/udp"
+        links:
+            - elasticsearch:elasticsearch
+
+    kibana:
+        image: kibana
+        ports:
+            - "5601:5601"
+        links:
+            - elasticsearch:elasticsearch
+
+    app:
+        image: olegpuzanov/docker-symfony2
+        volumes:
+            - app/:/var/www
+        ports:
+            - "8080:8080"
+        command: "php /var/www/app/console server:run 0.0.0.0:8080 --env=prod"
+        links:
+            - heka:heka

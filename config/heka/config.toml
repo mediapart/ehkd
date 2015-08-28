@@ -1,0 +1,21 @@
+[Symfony2MonologUdpInput]
+type = "UdpInput"
+address = "0.0.0.0:4881"
+decoder = "Symfony2MonologDecoder"
+
+[Symfony2MonologDecoder]
+type = "SandboxDecoder"
+filename = "/usr/share/heka/lua_decoders/monolog.lua"
+
+[ESJsonEncoder]
+index = "heka"
+es_index_from_timestamp = true
+type_name = "%{Type}"
+
+[ElasticSearchOutput]
+encoder = "ESJsonEncoder"
+server = "http://elasticsearch:9200"
+message_matcher = "TRUE"
+flush_interval = 5000
+flush_count = 10
+
